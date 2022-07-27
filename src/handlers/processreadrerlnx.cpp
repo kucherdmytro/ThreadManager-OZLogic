@@ -76,60 +76,67 @@ StatData ProcessReaderLnx::readStatData(const QString &filePath)
     }
 
     StatData statData;
-    QStringList values = QString(statFile.readLine()).remove("(").remove(")").replace("  ", " ").split(" ");
+    QString  line = statFile.readLine().trimmed();
+
+    // read proc name
+    statData.tcomm = line.mid(line.indexOf(" ("), line.indexOf(") ") - line.indexOf(" (") + 1).trimmed();
+    statData.tcomm.remove('(').remove(')');
+    // remove proc name val from the line
+    line.remove(line.indexOf(" ("), line.indexOf(") ") - line.indexOf(" (") + 1);
+
+    QStringList values = line.replace("  ", " ").split(" ");
 
     statData.pid           = values.at(0).toInt();          // %d
-    statData.tcomm         = values.at(1);                  // %s
-    statData.state         = values.at(2).at(0);            // %c
-    statData.ppid          = values.at(3).toInt();          // %d
-    statData.pgrp          = values.at(4).toInt();          // %d
-    statData.sid           = values.at(5).toInt();          // %d
-    statData.tty_nr        = values.at(6).toInt();          // %d
-    statData.tty_pgrp      = values.at(7).toInt();          // %d
-    statData.flags         = values.at(8).toUInt();         // %u
-    statData.min_flt       = values.at(9).toULong();        // %lu
-    statData.cmin_flt      = values.at(10).toULong();       // %lu
-    statData.maj_flt       = values.at(11).toULong();       // %lu
-    statData.cmaj_flt      = values.at(12).toULong();       // %lu
-    statData.utime         = values.at(13).toULong();       // %lu
-    statData.stime         = values.at(14).toULong();       // %lu
-    statData.cutime        = values.at(15).toLong();        // %ld
-    statData.cstime        = values.at(16).toLong();        // %ld
-    statData.priority      = values.at(17).toLong();        // %ld
-    statData.nice          = values.at(18).toLong();        // %ld
-    statData.num_threads   = values.at(19).toLong();        // %ld
-    statData.it_real_value = values.at(20).toLong();        // %ld
-    statData.start_time    = values.at(21).toULongLong();   // %llu
-    statData.vsize         = values.at(22).toULong();       // %lu
-    statData.rss           = values.at(23).toLong();        // %ld
-    statData.rsslim        = values.at(24).toULong();       // %lu
-    statData.start_code    = values.at(25).toULong();       // %lu
-    statData.end_code      = values.at(26).toULong();       // %lu
-    statData.start_stack   = values.at(27).toULong();       // %lu
-    statData.esp           = values.at(28).toULong();       // %lu
-    statData.eip           = values.at(29).toULong();       // %lu
-    statData.pending       = values.at(30).toULong();       // %lu
-    statData.blocked       = values.at(31).toULong();       // %lu
-    statData.sigign        = values.at(32).toULong();       // %lu
-    statData.sigcatch      = values.at(33).toULong();       // %lu
-    statData.wchan         = values.at(34).toULong();       // %lu
-    statData.nswap         = values.at(35).toULong();       // %lu
-    statData.cnswap        = values.at(36).toULong();       // %lu
-    statData.exit_signal   = values.at(37).toLong();        // %ld
-    statData.task_cpu      = values.at(38).toLong();        // %ld
-    statData.rt_priority   = values.at(39).toUInt();        // %u
-    statData.policy        = values.at(40).toUInt();        // %u
-    statData.blkio_ticks   = values.at(41).toULongLong();   // %llu
-    statData.gtime         = values.at(42).toULong();       // %lu
-    statData.cgtime        = values.at(43).toLong();        // %ld
-    statData.start_data    = values.at(44).toULong();       // %lu
-    statData.end_data      = values.at(45).toULong();       // %lu
-    statData.start_brk     = values.at(46).toULong();       // %lu
-    statData.arg_start     = values.at(47).toULong();       // %lu
-    statData.arg_end       = values.at(48).toULong();       // %lu
-    statData.env_start     = values.at(49).toULong();       // %lu
-    statData.env_end       = values.at(50).toULong();       // %lu
-    statData.exit_code     = values.at(51).toInt();         // %d
+    statData.state         = values.at(1).at(0);            // %c
+    statData.ppid          = values.at(2).toInt();          // %d
+    statData.pgrp          = values.at(3).toInt();          // %d
+    statData.sid           = values.at(4).toInt();          // %d
+    statData.tty_nr        = values.at(5).toInt();          // %d
+    statData.tty_pgrp      = values.at(6).toInt();          // %d
+    statData.flags         = values.at(7).toUInt();         // %u
+    statData.min_flt       = values.at(8).toULong();        // %lu
+    statData.cmin_flt      = values.at(9).toULong();       // %lu
+    statData.maj_flt       = values.at(10).toULong();       // %lu
+    statData.cmaj_flt      = values.at(11).toULong();       // %lu
+    statData.utime         = values.at(12).toULong();       // %lu
+    statData.stime         = values.at(13).toULong();       // %lu
+    statData.cutime        = values.at(14).toLong();        // %ld
+    statData.cstime        = values.at(15).toLong();        // %ld
+    statData.priority      = values.at(16).toLong();        // %ld
+    statData.nice          = values.at(17).toLong();        // %ld
+    statData.num_threads   = values.at(18).toLong();        // %ld
+    statData.it_real_value = values.at(19).toLong();        // %ld
+    statData.start_time    = values.at(20).toULongLong();   // %llu
+    statData.vsize         = values.at(21).toULong();       // %lu
+    statData.rss           = values.at(22).toLong();        // %ld
+    statData.rsslim        = values.at(23).toULong();       // %lu
+    statData.start_code    = values.at(24).toULong();       // %lu
+    statData.end_code      = values.at(25).toULong();       // %lu
+    statData.start_stack   = values.at(26).toULong();       // %lu
+    statData.esp           = values.at(27).toULong();       // %lu
+    statData.eip           = values.at(28).toULong();       // %lu
+    statData.pending       = values.at(29).toULong();       // %lu
+    statData.blocked       = values.at(30).toULong();       // %lu
+    statData.sigign        = values.at(31).toULong();       // %lu
+    statData.sigcatch      = values.at(32).toULong();       // %lu
+    statData.wchan         = values.at(33).toULong();       // %lu
+    statData.nswap         = values.at(34).toULong();       // %lu
+    statData.cnswap        = values.at(35).toULong();       // %lu
+    statData.exit_signal   = values.at(36).toLong();        // %ld
+    statData.task_cpu      = values.at(37).toLong();        // %ld
+    statData.rt_priority   = values.at(38).toUInt();        // %u
+    statData.policy        = values.at(39).toUInt();        // %u
+    statData.blkio_ticks   = values.at(40).toULongLong();   // %llu
+    statData.gtime         = values.at(41).toULong();       // %lu
+    statData.cgtime        = values.at(42).toLong();        // %ld
+    statData.start_data    = values.at(43).toULong();       // %lu
+    statData.end_data      = values.at(44).toULong();       // %lu
+    statData.start_brk     = values.at(45).toULong();       // %lu
+    statData.arg_start     = values.at(46).toULong();       // %lu
+    statData.arg_end       = values.at(47).toULong();       // %lu
+    statData.env_start     = values.at(48).toULong();       // %lu
+    statData.env_end       = values.at(49).toULong();       // %lu
+    statData.exit_code     = values.at(50).toInt();         // %d
 
     statFile.close();
     return statData;

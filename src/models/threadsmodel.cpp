@@ -74,6 +74,10 @@ QVariant ThreadsModel::data(const QModelIndex &index, int role) const
             {
                 return QVariant::fromValue(QString("Dead"));
             }
+            if(ts.state == 'I')
+            {
+                return QVariant::fromValue(QString("Idle"));
+            }
             return QVariant::fromValue(ts.state);
             break;
         case 6:
