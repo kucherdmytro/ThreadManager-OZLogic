@@ -29,6 +29,7 @@ QList<ProcDesc> ProcessReaderLnx::readProcesses()
                 procDesc.threadNum  = procData.num_threads;
                 procDesc.priority   = procData.priority;
                 procDesc.nice       = procData.nice;
+
                 procDesc.memTtl     = statmData.size     * sysconf(_SC_PAGESIZE);
                 procDesc.memRss     = statmData.resident * sysconf(_SC_PAGESIZE);
                 procDesc.memShr     = statmData.shared   * sysconf(_SC_PAGESIZE);
@@ -44,7 +45,8 @@ QList<ProcDesc> ProcessReaderLnx::readProcesses()
                         if(ok)
                         {
                             ThreadStat threadStat;
-                            StatData   threadData = readStatData("/proc/" + QString::number(pid) + "/task/" + QString::number(tid) + "/stat");
+                            StatData   threadData = readStatData ("/proc/" + QString::number(pid) + "/task/" + QString::number(tid) + "/stat");
+                            StatmData  statmData  = readStatmData("/proc/" + QString::number(pid) + "/task/" + QString::number(tid) + "/statm");
 
                             threadStat.tid        = threadData.pid;
                             threadStat.tName      = threadData.tcomm;
@@ -53,7 +55,10 @@ QList<ProcDesc> ProcessReaderLnx::readProcesses()
                             threadStat.state      = threadData.state;
                             threadStat.cpuTime    = (threadData.utime + threadData.stime) / sysconf(_SC_CLK_TCK);
                             threadStat.userTime   = threadData.utime / sysconf(_SC_CLK_TCK);
-                            threadStat.memRss     = threadData.rss   * sysconf(_SC_PAGESIZE);
+
+                            threadStat.memTtl     = statmData.size     * sysconf(_SC_PAGESIZE);
+                            threadStat.memRss     = statmData.resident * sysconf(_SC_PAGESIZE);
+                            threadStat.memShr     = statmData.shared   * sysconf(_SC_PAGESIZE);
 
                             procDesc.threadStats.append(threadStat);
                         }

@@ -60,29 +60,67 @@ void MainWindow::slot_showThreadInfo(const ThreadStat &stat)
 {
     qint32  tid     = stat.tid;
     quint64 cTime   = stat.cpuTime;
-    quint64 memRss = stat.memRss;
+
+    QString ttlStr;
+    if(stat.memTtl < 1024)
+    {
+        ttlStr = QString::number(stat.memTtl) + "B";
+    }
+    if(stat.memTtl >= 1024 && stat.memTtl < (1024 * 1024))
+    {
+        ttlStr = QString::number(stat.memTtl / 1024) + "K";
+    }
+    if(stat.memTtl >= (1024 * 1024) && stat.memTtl < (1024 * 1024 * 1024))
+    {
+        ttlStr = QString::number(stat.memTtl / 1024 / 1024) + "M";
+    }
+    if(stat.memTtl >= (1024 * 1024 * 1024))
+    {
+        ttlStr = QString::number(stat.memTtl / 1024 / 1024 / 1024) + "G";
+    }
+
     QString rssStr;
+    if(stat.memRss < 1024)
+    {
+        rssStr = QString::number(stat.memRss) + "B";
+    }
+    if(stat.memRss >= 1024 && stat.memRss < (1024 * 1024))
+    {
+        rssStr = QString::number(stat.memRss / 1024) + "K";
+    }
+    if(stat.memRss >= (1024 * 1024) && stat.memRss < (1024 * 1024 * 1024))
+    {
+        rssStr = QString::number(stat.memRss / 1024 / 1024) + "M";
+    }
+    if(stat.memRss >= (1024 * 1024 * 1024))
+    {
+        rssStr = QString::number(stat.memRss / 1024 / 1024 / 1024) + "G";
+    }
 
-    if(memRss < 1024)
+    QString shrStr;
+    if(stat.memShr < 1024)
     {
-        rssStr = QString::number(memRss) + "B";
+        shrStr = QString::number(stat.memShr) + "B";
     }
-    if(memRss >= 1024 && memRss < (1024 * 1024))
+    if(stat.memShr >= 1024 && stat.memShr < (1024 * 1024))
     {
-        rssStr = QString::number(memRss / 1024) + "K";
+        shrStr = QString::number(stat.memShr / 1024) + "K";
     }
-    if(memRss >= (1024 * 1024) && memRss < (1024 * 1024 * 1024))
+    if(stat.memShr >= (1024 * 1024) && stat.memShr < (1024 * 1024 * 1024))
     {
-        rssStr = QString::number(memRss / 1024 / 1024) + "M";
+        shrStr = QString::number(stat.memShr / 1024 / 1024) + "M";
     }
-    if(memRss >= (1024 * 1024 * 1024))
+    if(stat.memShr >= (1024 * 1024 * 1024))
     {
-        rssStr = QString::number(memRss / 1024 / 1024 / 1024) + "G";
+        shrStr = QString::number(stat.memShr / 1024 / 1024 / 1024) + "G";
     }
 
-    QString message = "TID: %0, Memory (RSS): %1, Thread Time: %2";
-
-    ui->statusbar->showMessage(message.arg(tid).arg(rssStr).arg(QTime(0, 0, cTime).toString("hh:mm:ss")));
+    QString message = "TID: %0, Memory (TOTAL): %1, (RSS): %2, (SHR): %3 Thread Time: %4";
+    ui->statusbar->showMessage(message.arg(tid)
+                                      .arg(ttlStr)
+                                      .arg(rssStr)
+                                      .arg(shrStr)
+                                      .arg(QTime(0, 0, cTime).toString("hh:mm:ss")));
 }
 // ---------------------------------------------------------------------------------------
 void MainWindow::slot_updateProcData()

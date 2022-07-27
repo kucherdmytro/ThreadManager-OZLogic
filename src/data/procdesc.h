@@ -13,7 +13,9 @@ struct ThreadStat
     QChar               state       {0};
     quint64             cpuTime     {0};
     quint64             userTime    {0};
-    quint64             memRss      {0};
+    quint64             memTtl      {0}; // bytes
+    quint64             memRss      {0}; // bytes
+    quint64             memShr      {0}; // bytes
 
     bool operator==(const ThreadStat &other) const
     {
