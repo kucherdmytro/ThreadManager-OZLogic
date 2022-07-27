@@ -11,7 +11,7 @@
 
 #include "processreader.h"
 
-// /proc/[pid]/statm file
+// /proc/[pid]/statm file. INFO: https://www.kernel.org/doc/html/latest/filesystems/proc.html
 struct StatmData
 {
     quint64 size            {0};    /*1.   total program size*/
@@ -22,7 +22,7 @@ struct StatmData
     quint64 data            {0};    /*6.   data + stack*/
     quint64 dt              {0};    /*7.   dirty pages (unused since Linux 2.6; always 0)*/
 };
-// /proc/[pid]/stat file
+// /proc/[pid]/stat file. INFO: https://www.kernel.org/doc/html/latest/filesystems/proc.html
 struct StatData
 {
     qint32  pid             {0};    /*1.    process id*/
